@@ -6,13 +6,20 @@ import (
 	"os"
 	"strconv"
 
+	_ "one-client-view-2025tht/docs" // This will be auto-generated
+
 	"github.com/gorilla/mux"
 	"github.com/joho/godotenv"
+	httpSwagger "github.com/swaggo/http-swagger"
 
 	"one-client-view-2025tht/app/database"
 	"one-client-view-2025tht/app/handlers"
 	"one-client-view-2025tht/app/models"
 )
+
+// @host localhost:8080
+// @BasePath /api
+// @schemes http
 
 func main() {
 	// Load environment variables
@@ -75,6 +82,14 @@ func main() {
 	apiRouter.HandleFunc("/applications/{id}", applicationHandler.GetApplication).Methods("GET")
 	apiRouter.HandleFunc("/applications/{id}", applicationHandler.UpdateApplication).Methods("PUT")
 	apiRouter.HandleFunc("/applications/{id}", applicationHandler.DeleteApplication).Methods("DELETE")
+
+	// Swagger documentation
+	router.PathPrefix("/swagger/").Handler(httpSwagger.Handler(
+		httpSwagger.URL("/swagger/doc.json"),
+		httpSwagger.DeepLinking(true),
+		httpSwagger.DocExpansion("none"),
+		httpSwagger.DomID("swagger-ui"),
+	))
 
 	// Configure CORS middleware
 	router.Use(corsMiddleware)

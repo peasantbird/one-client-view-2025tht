@@ -9,16 +9,10 @@ A backend application for managing financial assistance schemes and applications
 - View eligible schemes for each applicant
 - Submit and manage applications for financial assistance
 
-## Technology Stack
-
-- Backend: Go (Golang)
-- Database: MySQL
-- API: RESTful API with JSON
-
 ## Prerequisites
 
-- Go 1.20 or higher
-- MySQL 8.0 or higher
+- Go
+- MySQL
 
 ## Setup Instructions
 
@@ -57,14 +51,21 @@ PORT=8080
 go mod download
 ```
 
-### 5. Build and run the application
+### 5. Run the application
 
 ```bash
-go build -o one-client-view-2025tht ./app
-./one-client-view-2025tht
+go run app/main.go
 ```
 
 The server will start running at `http://localhost:8080` by default.
+
+### 6. Accessing the Swagger Documentation
+
+Open your browser and navigate to:
+
+```text
+http://localhost:8080/swagger/index.html
+```
 
 ## API Endpoints
 

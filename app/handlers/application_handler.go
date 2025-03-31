@@ -26,6 +26,14 @@ func NewApplicationHandler(appRepo *models.ApplicationRepository, applicantRepo 
 }
 
 // GetApplications handles GET /api/applications
+// @Summary Get all applications
+// @Description Retrieve a list of all financial assistance applications
+// @Tags applications
+// @Accept json
+// @Produce json
+// @Success 200 {array} models.SwaggerApplicationResponse
+// @Failure 500 {object} string "Internal server error"
+// @Router /api/applications [get]
 func (h *ApplicationHandler) GetApplications(w http.ResponseWriter, r *http.Request) {
 	applications, err := h.ApplicationRepo.GetAll()
 	if err != nil {
@@ -58,6 +66,16 @@ func (h *ApplicationHandler) GetApplications(w http.ResponseWriter, r *http.Requ
 }
 
 // GetApplication handles GET /api/applications/{id}
+// @Summary Get application by ID
+// @Description Retrieve a specific application by its ID
+// @Tags applications
+// @Accept json
+// @Produce json
+// @Param id path string true "Application ID"
+// @Success 200 {object} models.SwaggerApplicationResponse
+// @Failure 404 {object} string "Application not found"
+// @Failure 500 {object} string "Internal server error"
+// @Router /api/applications/{id} [get]
 func (h *ApplicationHandler) GetApplication(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	id := vars["id"]
@@ -95,6 +113,17 @@ func (h *ApplicationHandler) GetApplication(w http.ResponseWriter, r *http.Reque
 }
 
 // CreateApplication handles POST /api/applications
+// @Summary Create a new application
+// @Description Submit a new application for a financial assistance scheme
+// @Tags applications
+// @Accept json
+// @Produce json
+// @Param application body models.ApplicationRequest true "Application information"
+// @Success 201 {object} models.SwaggerApplicationResponse
+// @Failure 400 {object} string "Bad request"
+// @Failure 404 {object} string "Applicant or scheme not found"
+// @Failure 500 {object} string "Internal server error"
+// @Router /api/applications [post]
 func (h *ApplicationHandler) CreateApplication(w http.ResponseWriter, r *http.Request) {
 	var request models.ApplicationRequest
 	err := json.NewDecoder(r.Body).Decode(&request)
@@ -175,6 +204,18 @@ func (h *ApplicationHandler) CreateApplication(w http.ResponseWriter, r *http.Re
 }
 
 // UpdateApplication handles PUT /api/applications/{id}
+// @Summary Update application
+// @Description Update an existing application's status or notes
+// @Tags applications
+// @Accept json
+// @Produce json
+// @Param id path string true "Application ID"
+// @Param application body object{status=string,notes=string} true "Updated application information"
+// @Success 200 {object} models.SwaggerApplicationResponse
+// @Failure 400 {object} string "Bad request"
+// @Failure 404 {object} string "Application not found"
+// @Failure 500 {object} string "Internal server error"
+// @Router /api/applications/{id} [put]
 func (h *ApplicationHandler) UpdateApplication(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	id := vars["id"]
@@ -239,6 +280,16 @@ func (h *ApplicationHandler) UpdateApplication(w http.ResponseWriter, r *http.Re
 }
 
 // DeleteApplication handles DELETE /api/applications/{id}
+// @Summary Delete application
+// @Description Remove an application from the system
+// @Tags applications
+// @Accept json
+// @Produce json
+// @Param id path string true "Application ID"
+// @Success 204 "No content"
+// @Failure 404 {object} string "Application not found"
+// @Failure 500 {object} string "Internal server error"
+// @Router /api/applications/{id} [delete]
 func (h *ApplicationHandler) DeleteApplication(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	id := vars["id"]

@@ -1,0 +1,668 @@
+basePath: /api
+definitions:
+  models.Applicant:
+    properties:
+      created_at:
+        type: string
+      date_of_birth:
+        type: string
+      employment_status:
+        type: string
+      household:
+        items:
+          $ref: '#/definitions/models.HouseholdMember'
+        type: array
+      id:
+        type: string
+      marital_status:
+        type: string
+      name:
+        type: string
+      sex:
+        type: string
+      updated_at:
+        type: string
+    type: object
+  models.ApplicantResponse:
+    properties:
+      created_at:
+        type: string
+      date_of_birth:
+        type: string
+      employment_status:
+        type: string
+      household:
+        items:
+          $ref: '#/definitions/models.HouseholdMember'
+        type: array
+      id:
+        type: string
+      marital_status:
+        type: string
+      name:
+        type: string
+      sex:
+        type: string
+      updated_at:
+        type: string
+    type: object
+  models.ApplicationRequest:
+    properties:
+      applicant_id:
+        type: string
+      notes:
+        type: string
+      scheme_id:
+        type: string
+    type: object
+  models.Benefit:
+    properties:
+      amount:
+        type: number
+      created_at:
+        type: string
+      description:
+        type: string
+      id:
+        type: string
+      name:
+        type: string
+      scheme_id:
+        type: string
+      updated_at:
+        type: string
+    type: object
+  models.ChildCriteria:
+    properties:
+      school_level:
+        type: string
+    type: object
+  models.Criteria:
+    properties:
+      employment_status:
+        type: string
+      has_children:
+        $ref: '#/definitions/models.ChildCriteria'
+      marital_status:
+        type: string
+    type: object
+  models.EligibleSchemesResponse:
+    properties:
+      applicant_id:
+        type: string
+      schemes:
+        items:
+          $ref: '#/definitions/models.SchemeResponse'
+        type: array
+    type: object
+  models.HouseholdMember:
+    properties:
+      applicant_id:
+        type: string
+      created_at:
+        type: string
+      date_of_birth:
+        type: string
+      employment_status:
+        type: string
+      id:
+        type: string
+      name:
+        type: string
+      relation:
+        type: string
+      sex:
+        type: string
+      updated_at:
+        type: string
+    type: object
+  models.Scheme:
+    properties:
+      benefits:
+        items:
+          $ref: '#/definitions/models.Benefit'
+        type: array
+      created_at:
+        type: string
+      criteria:
+        $ref: '#/definitions/models.Criteria'
+      description:
+        type: string
+      id:
+        type: string
+      name:
+        type: string
+      updated_at:
+        type: string
+    type: object
+  models.SchemeResponse:
+    properties:
+      benefits:
+        items:
+          $ref: '#/definitions/models.Benefit'
+        type: array
+      created_at:
+        type: string
+      criteria:
+        $ref: '#/definitions/models.Criteria'
+      description:
+        type: string
+      id:
+        type: string
+      name:
+        type: string
+      updated_at:
+        type: string
+    type: object
+  models.SwaggerApplicationResponse:
+    description: Response containing an application with applicant and scheme details
+    properties:
+      applicant:
+        $ref: '#/definitions/models.ApplicantResponse'
+      applicant_id:
+        example: 01913b7a-4493-74b2-93f8-e684c4ca935c
+        type: string
+      application_date:
+        type: string
+      created_at:
+        type: string
+      decision_date:
+        type: string
+      id:
+        example: 01913b7a-4493-74b2-93f8-e684c4ca935c
+        type: string
+      notes:
+        type: string
+      scheme:
+        $ref: '#/definitions/models.SchemeResponse'
+      scheme_id:
+        example: 01913b89-9a43-7163-8757-01cc254783f3
+        type: string
+      status:
+        enum:
+        - pending
+        - approved
+        - rejected
+        example: pending
+        type: string
+      updated_at:
+        type: string
+    type: object
+host: localhost:8080
+info:
+  contact: {}
+paths:
+  /api/applicants:
+    get:
+      consumes:
+      - application/json
+      description: Retrieve a list of all applicants with their household members
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/models.ApplicantResponse'
+            type: array
+        "500":
+          description: Internal server error
+          schema:
+            type: string
+      summary: Get all applicants
+      tags:
+      - applicants
+    post:
+      consumes:
+      - application/json
+      description: Add a new applicant to the system
+      parameters:
+      - description: Applicant information
+        in: body
+        name: applicant
+        required: true
+        schema:
+          $ref: '#/definitions/models.Applicant'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/models.ApplicantResponse'
+        "400":
+          description: Bad request
+          schema:
+            type: string
+        "500":
+          description: Internal server error
+          schema:
+            type: string
+      summary: Create a new applicant
+      tags:
+      - applicants
+  /api/applicants/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: Remove an applicant from the system
+      parameters:
+      - description: Applicant ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: No content
+        "404":
+          description: Applicant not found
+          schema:
+            type: string
+        "500":
+          description: Internal server error
+          schema:
+            type: string
+      summary: Delete applicant
+      tags:
+      - applicants
+    get:
+      consumes:
+      - application/json
+      description: Retrieve a specific applicant by their ID
+      parameters:
+      - description: Applicant ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.ApplicantResponse'
+        "404":
+          description: Applicant not found
+          schema:
+            type: string
+        "500":
+          description: Internal server error
+          schema:
+            type: string
+      summary: Get applicant by ID
+      tags:
+      - applicants
+    put:
+      consumes:
+      - application/json
+      description: Update an existing applicant's information
+      parameters:
+      - description: Applicant ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Updated applicant information
+        in: body
+        name: applicant
+        required: true
+        schema:
+          $ref: '#/definitions/models.Applicant'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Applicant'
+        "400":
+          description: Bad request
+          schema:
+            type: string
+        "404":
+          description: Applicant not found
+          schema:
+            type: string
+        "500":
+          description: Internal server error
+          schema:
+            type: string
+      summary: Update applicant
+      tags:
+      - applicants
+  /api/applications:
+    get:
+      consumes:
+      - application/json
+      description: Retrieve a list of all financial assistance applications
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/models.SwaggerApplicationResponse'
+            type: array
+        "500":
+          description: Internal server error
+          schema:
+            type: string
+      summary: Get all applications
+      tags:
+      - applications
+    post:
+      consumes:
+      - application/json
+      description: Submit a new application for a financial assistance scheme
+      parameters:
+      - description: Application information
+        in: body
+        name: application
+        required: true
+        schema:
+          $ref: '#/definitions/models.ApplicationRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/models.SwaggerApplicationResponse'
+        "400":
+          description: Bad request
+          schema:
+            type: string
+        "404":
+          description: Applicant or scheme not found
+          schema:
+            type: string
+        "500":
+          description: Internal server error
+          schema:
+            type: string
+      summary: Create a new application
+      tags:
+      - applications
+  /api/applications/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: Remove an application from the system
+      parameters:
+      - description: Application ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: No content
+        "404":
+          description: Application not found
+          schema:
+            type: string
+        "500":
+          description: Internal server error
+          schema:
+            type: string
+      summary: Delete application
+      tags:
+      - applications
+    get:
+      consumes:
+      - application/json
+      description: Retrieve a specific application by its ID
+      parameters:
+      - description: Application ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.SwaggerApplicationResponse'
+        "404":
+          description: Application not found
+          schema:
+            type: string
+        "500":
+          description: Internal server error
+          schema:
+            type: string
+      summary: Get application by ID
+      tags:
+      - applications
+    put:
+      consumes:
+      - application/json
+      description: Update an existing application's status or notes
+      parameters:
+      - description: Application ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Updated application information
+        in: body
+        name: application
+        required: true
+        schema:
+          properties:
+            notes:
+              type: string
+            status:
+              type: string
+          type: object
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.SwaggerApplicationResponse'
+        "400":
+          description: Bad request
+          schema:
+            type: string
+        "404":
+          description: Application not found
+          schema:
+            type: string
+        "500":
+          description: Internal server error
+          schema:
+            type: string
+      summary: Update application
+      tags:
+      - applications
+  /api/schemes:
+    get:
+      consumes:
+      - application/json
+      description: Retrieve a list of all financial assistance schemes
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/models.SchemeResponse'
+            type: array
+        "500":
+          description: Internal server error
+          schema:
+            type: string
+      summary: Get all schemes
+      tags:
+      - schemes
+    post:
+      consumes:
+      - application/json
+      description: Add a new financial assistance scheme
+      parameters:
+      - description: Scheme information
+        in: body
+        name: scheme
+        required: true
+        schema:
+          $ref: '#/definitions/models.Scheme'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/models.SchemeResponse'
+        "400":
+          description: Bad request
+          schema:
+            type: string
+        "500":
+          description: Internal server error
+          schema:
+            type: string
+      summary: Create a new scheme
+      tags:
+      - schemes
+  /api/schemes/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: Remove a scheme from the system
+      parameters:
+      - description: Scheme ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: No content
+        "404":
+          description: Scheme not found
+          schema:
+            type: string
+        "500":
+          description: Internal server error
+          schema:
+            type: string
+      summary: Delete scheme
+      tags:
+      - schemes
+    get:
+      consumes:
+      - application/json
+      description: Retrieve a specific scheme by its ID
+      parameters:
+      - description: Scheme ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.SchemeResponse'
+        "404":
+          description: Scheme not found
+          schema:
+            type: string
+        "500":
+          description: Internal server error
+          schema:
+            type: string
+      summary: Get scheme by ID
+      tags:
+      - schemes
+    put:
+      consumes:
+      - application/json
+      description: Update an existing scheme's information
+      parameters:
+      - description: Scheme ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Updated scheme information
+        in: body
+        name: scheme
+        required: true
+        schema:
+          $ref: '#/definitions/models.Scheme'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.SchemeResponse'
+        "400":
+          description: Bad request
+          schema:
+            type: string
+        "404":
+          description: Scheme not found
+          schema:
+            type: string
+        "500":
+          description: Internal server error
+          schema:
+            type: string
+      summary: Update scheme
+      tags:
+      - schemes
+  /api/schemes/eligible:
+    get:
+      consumes:
+      - application/json
+      description: Retrieve all schemes that an applicant is eligible for
+      parameters:
+      - description: Applicant ID
+        in: query
+        name: applicant
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.EligibleSchemesResponse'
+        "400":
+          description: Bad request
+          schema:
+            type: string
+        "404":
+          description: Applicant not found
+          schema:
+            type: string
+        "500":
+          description: Internal server error
+          schema:
+            type: string
+      summary: Get eligible schemes for an applicant
+      tags:
+      - schemes
+schemes:
+- http
+swagger: "2.0"

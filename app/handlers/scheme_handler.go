@@ -24,6 +24,14 @@ func NewSchemeHandler(schemeRepo *models.SchemeRepository, applicantRepo *models
 }
 
 // GetSchemes handles GET /api/schemes
+// @Summary Get all schemes
+// @Description Retrieve a list of all financial assistance schemes
+// @Tags schemes
+// @Accept json
+// @Produce json
+// @Success 200 {array} models.SchemeResponse
+// @Failure 500 {object} string "Internal server error"
+// @Router /api/schemes [get]
 func (h *SchemeHandler) GetSchemes(w http.ResponseWriter, r *http.Request) {
 	schemes, err := h.SchemeRepo.GetAll()
 	if err != nil {
@@ -45,6 +53,16 @@ func (h *SchemeHandler) GetSchemes(w http.ResponseWriter, r *http.Request) {
 }
 
 // GetScheme handles GET /api/schemes/{id}
+// @Summary Get scheme by ID
+// @Description Retrieve a specific scheme by its ID
+// @Tags schemes
+// @Accept json
+// @Produce json
+// @Param id path string true "Scheme ID"
+// @Success 200 {object} models.SchemeResponse
+// @Failure 404 {object} string "Scheme not found"
+// @Failure 500 {object} string "Internal server error"
+// @Router /api/schemes/{id} [get]
 func (h *SchemeHandler) GetScheme(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	id := vars["id"]
@@ -70,6 +88,17 @@ func (h *SchemeHandler) GetScheme(w http.ResponseWriter, r *http.Request) {
 }
 
 // GetEligibleSchemes handles GET /api/schemes/eligible?applicant={id}
+// @Summary Get eligible schemes for an applicant
+// @Description Retrieve all schemes that an applicant is eligible for
+// @Tags schemes
+// @Accept json
+// @Produce json
+// @Param applicant query string true "Applicant ID"
+// @Success 200 {object} models.EligibleSchemesResponse
+// @Failure 400 {object} string "Bad request"
+// @Failure 404 {object} string "Applicant not found"
+// @Failure 500 {object} string "Internal server error"
+// @Router /api/schemes/eligible [get]
 func (h *SchemeHandler) GetEligibleSchemes(w http.ResponseWriter, r *http.Request) {
 	applicantID := r.URL.Query().Get("applicant")
 	if applicantID == "" {
@@ -114,6 +143,16 @@ func (h *SchemeHandler) GetEligibleSchemes(w http.ResponseWriter, r *http.Reques
 }
 
 // CreateScheme handles POST /api/schemes
+// @Summary Create a new scheme
+// @Description Add a new financial assistance scheme
+// @Tags schemes
+// @Accept json
+// @Produce json
+// @Param scheme body models.Scheme true "Scheme information"
+// @Success 201 {object} models.SchemeResponse
+// @Failure 400 {object} string "Bad request"
+// @Failure 500 {object} string "Internal server error"
+// @Router /api/schemes [post]
 func (h *SchemeHandler) CreateScheme(w http.ResponseWriter, r *http.Request) {
 	var scheme models.Scheme
 	err := json.NewDecoder(r.Body).Decode(&scheme)
@@ -149,6 +188,18 @@ func (h *SchemeHandler) CreateScheme(w http.ResponseWriter, r *http.Request) {
 }
 
 // UpdateScheme handles PUT /api/schemes/{id}
+// @Summary Update scheme
+// @Description Update an existing scheme's information
+// @Tags schemes
+// @Accept json
+// @Produce json
+// @Param id path string true "Scheme ID"
+// @Param scheme body models.Scheme true "Updated scheme information"
+// @Success 200 {object} models.SchemeResponse
+// @Failure 400 {object} string "Bad request"
+// @Failure 404 {object} string "Scheme not found"
+// @Failure 500 {object} string "Internal server error"
+// @Router /api/schemes/{id} [put]
 func (h *SchemeHandler) UpdateScheme(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	id := vars["id"]
@@ -203,6 +254,16 @@ func (h *SchemeHandler) UpdateScheme(w http.ResponseWriter, r *http.Request) {
 }
 
 // DeleteScheme handles DELETE /api/schemes/{id}
+// @Summary Delete scheme
+// @Description Remove a scheme from the system
+// @Tags schemes
+// @Accept json
+// @Produce json
+// @Param id path string true "Scheme ID"
+// @Success 204 "No content"
+// @Failure 404 {object} string "Scheme not found"
+// @Failure 500 {object} string "Internal server error"
+// @Router /api/schemes/{id} [delete]
 func (h *SchemeHandler) DeleteScheme(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	id := vars["id"]

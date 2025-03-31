@@ -22,6 +22,14 @@ func NewApplicantHandler(repo *models.ApplicantRepository) *ApplicantHandler {
 }
 
 // GetApplicants handles GET /api/applicants
+// @Summary Get all applicants
+// @Description Retrieve a list of all applicants with their household members
+// @Tags applicants
+// @Accept json
+// @Produce json
+// @Success 200 {array} models.ApplicantResponse
+// @Failure 500 {object} string "Internal server error"
+// @Router /api/applicants [get]
 func (h *ApplicantHandler) GetApplicants(w http.ResponseWriter, r *http.Request) {
 	applicants, err := h.ApplicantRepo.GetAll()
 	if err != nil {
@@ -43,6 +51,16 @@ func (h *ApplicantHandler) GetApplicants(w http.ResponseWriter, r *http.Request)
 }
 
 // GetApplicant handles GET /api/applicants/{id}
+// @Summary Get applicant by ID
+// @Description Retrieve a specific applicant by their ID
+// @Tags applicants
+// @Accept json
+// @Produce json
+// @Param id path string true "Applicant ID"
+// @Success 200 {object} models.ApplicantResponse
+// @Failure 404 {object} string "Applicant not found"
+// @Failure 500 {object} string "Internal server error"
+// @Router /api/applicants/{id} [get]
 func (h *ApplicantHandler) GetApplicant(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	id := vars["id"]
@@ -68,6 +86,16 @@ func (h *ApplicantHandler) GetApplicant(w http.ResponseWriter, r *http.Request) 
 }
 
 // CreateApplicant handles POST /api/applicants
+// @Summary Create a new applicant
+// @Description Add a new applicant to the system
+// @Tags applicants
+// @Accept json
+// @Produce json
+// @Param applicant body models.Applicant true "Applicant information"
+// @Success 201 {object} models.ApplicantResponse
+// @Failure 400 {object} string "Bad request"
+// @Failure 500 {object} string "Internal server error"
+// @Router /api/applicants [post]
 func (h *ApplicantHandler) CreateApplicant(w http.ResponseWriter, r *http.Request) {
 	var applicant models.Applicant
 	err := json.NewDecoder(r.Body).Decode(&applicant)
@@ -127,6 +155,18 @@ func (h *ApplicantHandler) CreateApplicant(w http.ResponseWriter, r *http.Reques
 }
 
 // UpdateApplicant handles PUT /api/applicants/{id}
+// @Summary Update applicant
+// @Description Update an existing applicant's information
+// @Tags applicants
+// @Accept json
+// @Produce json
+// @Param id path string true "Applicant ID"
+// @Param applicant body models.Applicant true "Updated applicant information"
+// @Success 200 {object} models.Applicant
+// @Failure 400 {object} string "Bad request"
+// @Failure 404 {object} string "Applicant not found"
+// @Failure 500 {object} string "Internal server error"
+// @Router /api/applicants/{id} [put]
 func (h *ApplicantHandler) UpdateApplicant(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	id := vars["id"]
@@ -186,6 +226,16 @@ func (h *ApplicantHandler) UpdateApplicant(w http.ResponseWriter, r *http.Reques
 }
 
 // DeleteApplicant handles DELETE /api/applicants/{id}
+// @Summary Delete applicant
+// @Description Remove an applicant from the system
+// @Tags applicants
+// @Accept json
+// @Produce json
+// @Param id path string true "Applicant ID"
+// @Success 204 "No content"
+// @Failure 404 {object} string "Applicant not found"
+// @Failure 500 {object} string "Internal server error"
+// @Router /api/applicants/{id} [delete]
 func (h *ApplicantHandler) DeleteApplicant(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	id := vars["id"]
